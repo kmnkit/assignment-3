@@ -7,11 +7,6 @@
 
 import UIKit
 
-enum PositiveNegative: Int {
-    case positive = 1
-    case negative = -1
-}
-
 class ViewController: UIViewController {
     
     @IBOutlet private weak var numberTextField1: UITextField!
@@ -27,12 +22,14 @@ class ViewController: UIViewController {
             
     override func viewDidLoad() {
         super.viewDidLoad()
+
         let numberTextFields: [UITextField] = [numberTextField1, numberTextField2]
-        let switches: [UISwitch] = [leftSwitch, rightSwitch]
         numberTextFields.forEach { textField in
             textField.keyboardType = .numberPad
             textField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
         }
+
+        let switches: [UISwitch] = [leftSwitch, rightSwitch]
         switches.forEach { negativeSwitch in
             negativeSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         }
@@ -41,19 +38,25 @@ class ViewController: UIViewController {
     // UITextFieldの値を変更したときの処理
     @objc private func textChanged(sender: UITextField) {
         // Senderが左のUITextFieldなら左の数字ラベルの値を変更し、右の場合は右のラベルの値を変更する
-        if sender == numberTextField1 { // When Left Text Field Text changed
+        switch sender {
+        case numberTextField1:
             changeLabelValue(textField: numberTextField1, positiveSwitch: leftSwitch, numberLabel: leftNumberLabel)
-        } else { // When Right Text Field Text changed
+        case numberTextField2:
             changeLabelValue(textField: numberTextField2, positiveSwitch: rightSwitch, numberLabel: rightNumberLabel)
+        default:
+            break
         }
     }
     
     // SwitchのOn/OffによってPlusまたはMinusを切り替える。
     @objc private func switchValueChanged(sender: UISwitch) {
-        if sender == leftSwitch { // When Left Switch value changed
+        switch sender {
+        case leftSwitch:
             changeLabelValue(textField: numberTextField1, positiveSwitch: leftSwitch, numberLabel: leftNumberLabel)
-        } else { // When Right Switch value changed
+        case rightSwitch:
             changeLabelValue(textField: numberTextField2, positiveSwitch: rightSwitch, numberLabel: rightNumberLabel)
+        default:
+            break
         }
     }
     
