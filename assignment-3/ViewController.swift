@@ -37,39 +37,29 @@ class ViewController: UIViewController {
     
     // UITextFieldの値を変更したときの処理
     @objc private func textChanged(sender: UITextField) {
-        // Senderが左のUITextFieldなら左の数字ラベルの値を変更し、右の場合は右のラベルの値を変更する
-        switch sender {
-        case numberTextField1:
-            changeLabelValue(textField: numberTextField1, positiveSwitch: leftSwitch, numberLabel: leftNumberLabel)
-        case numberTextField2:
-            changeLabelValue(textField: numberTextField2, positiveSwitch: rightSwitch, numberLabel: rightNumberLabel)
-        default:
-            break
-        }
+        updateResultLabel()
     }
     
     // SwitchのOn/OffによってPlusまたはMinusを切り替える。
     @objc private func switchValueChanged(sender: UISwitch) {
-        switch sender {
-        case leftSwitch:
-            changeLabelValue(textField: numberTextField1, positiveSwitch: leftSwitch, numberLabel: leftNumberLabel)
-        case rightSwitch:
-            changeLabelValue(textField: numberTextField2, positiveSwitch: rightSwitch, numberLabel: rightNumberLabel)
-        default:
-            break
-        }
+        updateResultLabel()
     }
     
-    // 引数として受け取ったTextFieldの値とSwitchの値によって同じく引数のLabelの値を変更する。
-    private func changeLabelValue(textField: UITextField, positiveSwitch: UISwitch, numberLabel: UILabel) {
-        let value = Int(textField.text ?? "") ?? 0
-        numberLabel.text = "\(positiveSwitch.isOn ? -value : value)"
-    }
-
     // Calculate Buttonを押したときに左ラベルと右ラベルの値を単純計算して結果ラベルに表示する
     @IBAction func tapCalculateButton(_ sender: UIButton) {
+        updateResultLabel()
+    }
+
+    private func updateResultLabel() {
         let leftValue = Int(numberTextField1.text ?? "") ?? 0
         let rightValue = Int(numberTextField2.text ?? "") ?? 0
-        resultLabel.text = "\((leftSwitch.isOn ? -leftValue : leftValue) + (rightSwitch.isOn ? -rightValue : rightValue))"
+
+        let signedLeftValue = leftSwitch.isOn ? -leftValue : leftValue
+        let signedRightValue = rightSwitch.isOn ? -rightValue : rightValue
+
+        leftNumberLabel.text = String(signedLeftValue)
+        rightNumberLabel.text = String(signedRightValue)
+
+        resultLabel.text = String(signedLeftValue + signedRightValue)
     }
 }
